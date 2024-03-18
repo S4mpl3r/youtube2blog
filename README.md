@@ -19,6 +19,11 @@ To install, do the following:
    git clone https://github.com/S4mpl3r/youtube2blog.git
    ```
 2. Create a python environment and activate it. (optional, but highly recommended)
+3. Create a .env file in the project root and populate it with your API keys:
+   ```bash
+   GROQ_API_KEY=<YOUR_KEY>
+   DEEPGRAM_API_KEY=<YOUR_KEY>
+   ```
 3. Install the required packages
    ```bash
    python -m pip install -r requirements.txt
