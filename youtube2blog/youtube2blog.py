@@ -86,6 +86,7 @@ class Utility:
 
 
 class Audio2Text:
+    """This class handles everything related to turning audio to text."""
 
     def __init__(self) -> None:
         self.deepgram = DeepgramClient(DEEPGRAM_API_KEY)
