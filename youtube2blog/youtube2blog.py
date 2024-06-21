@@ -104,10 +104,39 @@ class Audio2Text:
 
         return filepath
 
-    def transcribe_audio(
+    def transcribe_audio_groq(
         self, language: str = AUDIO_LANGUAGE, save_to_file: bool = True
     ) -> str:
-        """Transcribes an audio file."""
+        """Transcribes an audio file using Groq."""
+        filepath = self.get_audio_file_path()
+
+        with open(filepath, "rb") as f:
+            if language == "english":
+                lang = "en"
+            else:
+                lang = None
+
+            cprint("[+] Requesting transcript...", "light_green")
+            transcript = self.groq.audio.transcriptions.create(
+                file=(filepath, f.read()),
+                model="whisper-large-v3",
+                language=lang,
+                temperature=0.0,
+            )
+            cprint("[+] Transcription complete.", "light_green")
+
+        if save_to_file:
+            filename = filepath.split("/")[-1].split(".")[0] + "_transcript.txt"
+            Utility.save_to_file(
+                path=os.path.join(TRANSCRIPT_ROOT, filename), text=transcript.text
+            )
+
+        return transcript.text
+
+    def transcribe_audio_deepgram(
+        self, language: str = AUDIO_LANGUAGE, save_to_file: bool = True
+    ) -> str:
+        """Transcribes an audio file using Deepgram."""
         filepath = self.get_audio_file_path()
 
         with open(filepath, "rb") as buffer_data:
@@ -217,7 +246,8 @@ def main() -> None:
     a2t.from_youtube = True if opt2 == "1" else False
 
     start = time()
-    transcript = a2t.transcribe_audio()
+    # transcript = a2t.transcribe_audio_deepgram()
+    transcript = a2t.transcribe_audio_groq()
     if opt == "1":
         result = a2t.get_blog_post(transcript)
         Utility.pretty_print(result, "blog")
